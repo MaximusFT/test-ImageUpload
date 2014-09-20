@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>ImageUpload - work</title>
+    <meta name="viewport" content="width=device-width">
+
+    <!--
+    For beauty UI
+    -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    
+    <style>
+        /*
+            Small change to CSS
+         */
+        #thumbnail > div {
+            display: inline-block !important;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        .thumb {
+            height: 150px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="con-sm-12">
+                <h1>ImageUpload - work</h1>
+                <div class="well">
+                    <form id="imgUpload" class="form-horizontal" method="post" name="imgUpload" action="" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="images" class="col-sm-4 control-label">Please, chose you Images to Upload</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="file" id="images" name="files[]" multiple />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="thumbnail" class="col-sm-4 control-label">Thumbnail</label>
+                            <div class="col-sm-8">
+                                <output id="thumbnail" class="row" name="thumbnail"></output>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <input id="btn-submit" class="btn btn-primary" type="submit" value="Login" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        'use strict';
+        
+        /**
+         * Main Function
+         */
+        function actionFileChose(e) {
+            var files = e.target.files,
+                template,
+                f;
+            
+            /**
+             * Loop for all add files.
+             */
+            for (var i = 0; f = files[i]; i++) {
+                
+                /**
+                 * Check image Type
+                 */
+                if (f.type.match('image/jpeg') || f.type.match('image/png')) {
+                } else {
+                    continue;
+                };
+
+                /**
+                 * FileReader API
+                 * http://dev.w3.org/2006/webapi/FileAPI/#APIASynch
+                 */
+                var ctrlReader = new FileReader();
+
+                /**
+                 * FileReader API
+                 * Event Handler Attributes - onload
+                 */
+                ctrlReader.onload = (function(item) {
+                    return function(e) {
+                        var template = document.createElement('div');
+                        template.innerHTML = ['<a href="' + e.target.result + '" class="thumbnail" target="_blank"><img class="thumb" src="' + e.target.result + '" title="' + escape(item.name) + '"/></a>'].join('');
+                        document.getElementById('thumbnail').insertBefore(template, null);
+                    };
+                })(f);
+
+                ctrlReader.readAsDataURL(f);
+            }
+        }
+
+        /**
+         * Event listener on Change input
+         */
+        document.getElementById('images').addEventListener('change', actionFileChose, false);
+    </script>
+</body>
+</html>
